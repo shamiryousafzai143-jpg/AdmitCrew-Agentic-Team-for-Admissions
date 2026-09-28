@@ -1,0 +1,742 @@
+{
+  "name": "AdmitCrew - Reminder Agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "21876ad6-3804-4e70-a86a-d537d0ef595f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4",
+          "mode": "list",
+          "cachedResultName": "AdmitCrew_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1417752552,
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit#gid=1417752552"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "name",
+              "lookupValue": "Hamza Iqbal"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "69c69f33-46a8-48c9-a8ee-4faf1945103f",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qmnvXJCwrWK0mfyK",
+          "name": "Google Sheets account 18"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ef0e172c-c408-4e86-afbf-62e8d689243b",
+              "name": "reminder_message",
+              "value": "Hi Hamza Iqbal, just a friendly reminder regarding your study abroad application. We noticed we haven't heard from you recently. If you'd like to continue with your UK application or need any help, please reply to us.",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        848,
+        -16
+      ],
+      "id": "660bd8a0-8203-4f77-bedc-98f82816bba5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4",
+          "mode": "list",
+          "cachedResultName": "AdmitCrew_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 534370739,
+          "mode": "list",
+          "cachedResultName": "Approval_Queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit#gid=534370739"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "approval_id": "={{ 'APP' + Date.now() }}",
+            "lead_id": "={{ $('Get row(s) in sheet').item.json.lead_id }}",
+            "phone": "={{ $('Get row(s) in sheet').item.json.phone }}",
+            "message": "={{ $('Edit Fields').item.json.reminder_message }}",
+            "status": "Pending",
+            "created_at": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "approval_id",
+              "displayName": "approval_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "approved_at",
+              "displayName": "approved_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        -208
+      ],
+      "id": "0d4b82e5-948d-4fdb-8fd9-c4bb80873af4",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qmnvXJCwrWK0mfyK",
+          "name": "Google Sheets account 18"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4",
+          "mode": "list",
+          "cachedResultName": "AdmitCrew_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 534370739,
+          "mode": "list",
+          "cachedResultName": "Approval_Queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit#gid=534370739"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "Approved"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "9eb37202-4875-4685-8650-2e59ac750229",
+      "name": "Get row(s) in sheet1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qmnvXJCwrWK0mfyK",
+          "name": "Google Sheets account 18"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4",
+          "mode": "list",
+          "cachedResultName": "AdmitCrew_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 534370739,
+          "mode": "list",
+          "cachedResultName": "Approval_Queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit#gid=534370739"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "approval_id": "={{ $('Get row(s) in sheet1').item.json.approval_id }}",
+            "status": "Sent",
+            "approved_at": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "approval_id"
+          ],
+          "schema": [
+            {
+              "id": "approval_id",
+              "displayName": "approval_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "approved_at",
+              "displayName": "approved_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1456,
+        0
+      ],
+      "id": "0cad2d45-b16e-476b-b648-2a8f5bed86a8",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qmnvXJCwrWK0mfyK",
+          "name": "Google Sheets account 18"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4",
+          "mode": "list",
+          "cachedResultName": "AdmitCrew_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 770613116,
+          "mode": "list",
+          "cachedResultName": "Sent_Messages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit#gid=770613116"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ 'MSG' + Date.now() }}",
+            "lead_id": "={{ $('Get row(s) in sheet1').item.json.lead_id }}",
+            "phone": "={{ $('Get row(s) in sheet1').item.json.phone }}",
+            "message": "={{ $('Get row(s) in sheet1').item.json.message }}",
+            "sent_at": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2096,
+        -16
+      ],
+      "id": "f0e213fc-6f24-48ab-a236-3f84b1af7c39",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qmnvXJCwrWK0mfyK",
+          "name": "Google Sheets account 18"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4",
+          "mode": "list",
+          "cachedResultName": "AdmitCrew_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 770613116,
+          "mode": "list",
+          "cachedResultName": "Sent_Messages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit#gid=770613116"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "lead_id",
+              "lookupValue": "={{ $('Get row(s) in sheet1').item.json.lead_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1664,
+        0
+      ],
+      "id": "f489692d-0ed4-46f6-8f7a-b7dce3d17217",
+      "name": "Get row(s) in sheet2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qmnvXJCwrWK0mfyK",
+          "name": "Google Sheets account 18"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eba9e488-dfbc-43b6-ab40-0ae38e5b18a0",
+              "leftValue": "={{ $json.message_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1872,
+        0
+      ],
+      "id": "b4d23eb3-e5ce-4f87-8056-0f43a16f03cb",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4",
+          "mode": "list",
+          "cachedResultName": "AdmitCrew_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 534370739,
+          "mode": "list",
+          "cachedResultName": "Approval_Queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit#gid=534370739"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "lead_id",
+              "lookupValue": "={{ $('Get row(s) in sheet').item.json.lead_id }}"
+            },
+            {
+              "lookupColumn": "status",
+              "lookupValue": "Pending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        0
+      ],
+      "id": "3b09e77f-7f0c-448e-9dee-0662a0c96887",
+      "name": "Get row(s) in sheet3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qmnvXJCwrWK0mfyK",
+          "name": "Google Sheets account 18"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9d59530a-d33b-44a7-b9f2-9d9b1ab160d1",
+              "leftValue": "={{ $json.approval_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "ea14dd13-a68f-4e32-a25f-01e2f1cb2211",
+      "name": "If1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet3": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f86e175a-04ad-4b0b-b1ff-685786336e77",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a42928997801df7bfd484592d3de22c5b3502fb200d39605a018fcd34a22113c"
+  },
+  "nodeGroups": [],
+  "id": "7kwLt1S2iToNaLqs",
+  "tags": []
+}

@@ -1,0 +1,293 @@
+{
+  "name": "AdmitCrew - Document Checker",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "AdmitCrew Document Checker",
+        "formDescription": "Upload a fake test document for checking.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Student Name"
+            },
+            {
+              "fieldLabel": "Document Type",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Passport"
+                  },
+                  {
+                    "option": "Transcript"
+                  },
+                  {
+                    "option": "IELTS"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Document File",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dd84b9da-05b2-4f7d-b93a-fbbb215dac79",
+      "name": "On form submission",
+      "webhookId": "fa293082-a952-4e5c-bad2-82cc259cd390"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Document_File",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "adcdfedd-aae1-4561-ab06-d1d126f53e6a",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.text }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "document_name",
+              "description": "Name of the person shown on the document"
+            },
+            {
+              "name": "status",
+              "description": "Return only OK or Problem"
+            },
+            {
+              "name": "reason",
+              "description": "If there is a problem, give a short reason such as expired or name mismatch. If no problem, return OK"
+            },
+            {
+              "name": "expiry_date",
+              "description": "Expiry date shown on the document. If no expiry date exists, return N/A."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "1619cfdb-419c-4fa1-b7ad-f78b6a3b84bc",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        416,
+        208
+      ],
+      "id": "bbd1e29a-f6b3-4c3f-a695-b49c2569a170",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "OJCCBuBHudgBotyR",
+          "name": "Groq account 13"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4",
+          "mode": "list",
+          "cachedResultName": "AdmitCrew_DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 684938985,
+          "mode": "list",
+          "cachedResultName": "Documents",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17cA6lb8oSYg-ZoJ0j4dPVsQBAU4VdH_j0WMXl1_s5T4/edit#gid=684938985"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "document_id": "={{ 'DOC' + Date.now() }}",
+            "document_type": "={{ $('On form submission').item.json['Document Type'] }}",
+            "student_name": "={{ $('On form submission').item.json['Student Name'] }}",
+            "name_on_document": "={{ $('Information Extractor').item.json.output.document_name }}",
+            "result": "={{ $('Information Extractor').item.json.output.status }}",
+            "reason": "={{ $('Information Extractor').item.json.output.reason }}",
+            "checked_at": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "document_id",
+              "displayName": "document_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "document_type",
+              "displayName": "document_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "student_name",
+              "displayName": "student_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name_on_document",
+              "displayName": "name_on_document",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "result",
+              "displayName": "result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "checked_at",
+              "displayName": "checked_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        0
+      ],
+      "id": "c6eb860a-3f7f-42dc-9de1-fb572102f37e",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qmnvXJCwrWK0mfyK",
+          "name": "Google Sheets account 18"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "2a497212-11b2-4228-b0b0-588d02119f25",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a42928997801df7bfd484592d3de22c5b3502fb200d39605a018fcd34a22113c"
+  },
+  "nodeGroups": [],
+  "id": "n7HKlCT9tY1gurQw",
+  "tags": []
+}
